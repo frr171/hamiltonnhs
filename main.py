@@ -24,6 +24,8 @@ from google.appengine.api import urlfetch
 
 from xml.dom.minidom import *
 
+from pagemodel import *
+
 import string
 
 def getText(nodelist):
@@ -39,59 +41,69 @@ class HomePage(webapp.RequestHandler):
 			
 		cval = {}
 		
-		rssurl = "http://hamiltonnhs.tumblr.com/rss"
-		data = urlfetch.fetch(rssurl)
-		if data.status_code == 200:
-			dom = parseString(data.content)
-			
-			items = dom.getElementsByTagName("item")
-			
-			postshtml = ""
-			
-			posts = 0
-			
-			for item in items:
-				title = getText(item.getElementsByTagName("title")[0].childNodes)
-				postcontent = getText(item.getElementsByTagName("description")[0].childNodes)
-				link = getText(item.getElementsByTagName("link")[0].childNodes)
-				pubDate = getText(item.getElementsByTagName("pubDate")[0].childNodes)
+		try:
+			rssurl = "http://hamiltonnhs.tumblr.com/rss"
+			data = urlfetch.fetch(rssurl)
+			if data.status_code == 200:
+				dom = parseString(data.content)
 				
-				html = """
-				<strong>{{TITLE}}</strong> - {{DATE}}<br>
-				&nbsp;&nbsp;&nbsp;&nbsp;{{DESC}}&nbsp;&nbsp;<a href="{{LINK}}">See Entire Post</a><br><hr>
-				"""
+				items = dom.getElementsByTagName("item")
 				
-				html = html.replace("{{TITLE}}", title)
-				html = html.replace("{{DATE}}", string.join(pubDate.split()[:3], " "))
+				postshtml = ""
 				
-				short = ""
-				if len(postcontent) > 140:
-					short = postcontent[:140] + "..."
-				else:
-					short = postcontent
+				posts = 0
+				
+				for item in items:
+					title = getText(item.getElementsByTagName("title")[0].childNodes)
+					postcontent = getText(item.getElementsByTagName("description")[0].childNodes)
+					link = getText(item.getElementsByTagName("link")[0].childNodes)
+					pubDate = getText(item.getElementsByTagName("pubDate")[0].childNodes)
 					
-				#short = postcontent
+					html = """
+					<strong>{{TITLE}}</strong> - {{DATE}}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{{DESC}}&nbsp;&nbsp;<a href="{{LINK}}">See Entire Post</a><br><hr>
+					"""
 					
-				html = html.replace("{{DESC}}", short)
-				html = html.replace("{{LINK}}", link)
+					html = html.replace("{{TITLE}}", title)
+					html = html.replace("{{DATE}}", string.join(pubDate.split()[:3], " "))
+					
+					short = ""
+					if len(postcontent) > 140:
+						short = postcontent[:140] + "..."
+					else:
+						short = postcontent
+						
+					#short = postcontent
+						
+					html = html.replace("{{DESC}}", short)
+					html = html.replace("{{LINK}}", link)
+					
+					postshtml += html
+					
+					posts = posts + 1
+					
+					if posts > 3:
+						break
 				
-				postshtml += html
 				
-				posts = posts + 1
-				
-				if posts > 3:
-					break
 			
-			
-		
-			cval['posts'] = postshtml
+				cval['posts'] = postshtml
+		except:
+			pass
 		
 		content = template.render(os.path.join(os.path.dirname(__file__), 'html/columns.html'),cval)
+		
+		results = PageCode.gql("WHERE name = :1", "slider").fetch(limit=1)
+		silder = ""
+		if len(results) > 0:
+			slider = results[0].html
+		else:
+			template.render(os.path.join(os.path.dirname(__file__), 'html/slider.html'),{})
 		
 		template_values = {
 		'content' : content,
 		'pagename' : "Home Page",
-		'slider' : template.render(os.path.join(os.path.dirname(__file__), 'html/slider.html'),{}),
+		'slider' : slider,
 		'home' : "class='active'"
 		}
 		

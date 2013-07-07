@@ -1,0 +1,64 @@
+{% autoescape off %}
+
+
+<!-- Content -->
+<div id="content">
+
+	<!-- Box -->
+	<div class="box">
+		<!-- Box Head -->
+		<div class="box-head">
+			<h2>Welcome To The Admin Console</h2>
+		</div>
+		<!-- End Box Head -->
+		<p>
+		<br>&nbsp;&nbsp;From this console, you have full control over the various services offered by the site.<br><br>
+		<strong>&nbsp;&nbsp;From this console, you can:</strong><br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Edit the html code for the dynamic portions of the site.<br>
+		</p>
+
+		<br><br><br>
+	</div>
+	<!-- End Box -->
+
+	
+	<!-- Box -->
+	<div class="box">
+		<!-- Box Head -->
+		<div class="box-head">
+			<h2 class="left">Pages</h2>
+			
+				
+				<form action="newpage" method="post">
+				<div class="right">
+					<label>Name:</label>
+					<input name="name" type="text" class="field small-field" />
+					<input type="submit"  class="button" value="Create New" />
+					</div>
+				</form>
+			
+		</div>
+		<!-- End Box Head -->	
+
+		<!-- Table -->
+		<div class="table">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<th>Name</th>
+					<th width="110" class="ac">Content Control</th>
+				</tr>
+				{{pages}}
+			</table>
+			
+			
+		</div>
+		<!-- Table -->
+		
+	</div>
+	<!-- End Box -->
+	
+
+</div>
+<!-- End Content -->
+
+{% endautoescape %}

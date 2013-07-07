@@ -5,6 +5,16 @@ threadsafe: false
 api_version: 1
 
 handlers:
+
+- url: /admin/css
+  static_dir: themes/admin
+  
+- url: /admin
+  script: admin.py
+  
+- url: /admin/.*
+  script: admin.py
+  
 - url: /css
   static_dir: template/css
   
