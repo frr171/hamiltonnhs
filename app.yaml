@@ -1,0 +1,17 @@
+application: hamiltonnhs
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /css
+  static_dir: template/css
+  
+- url: /js
+  static_dir: template/js
+  
+- url: /images
+  static_dir: images
+  
+- url: .*
+  script: main.py
