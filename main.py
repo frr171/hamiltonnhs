@@ -39,6 +39,7 @@ def getText(nodelist):
 class HomePage(webapp.RequestHandler):
 	def get(self):
 			
+		postshtml = ""
 		cval = {}
 		
 		try:
@@ -48,8 +49,6 @@ class HomePage(webapp.RequestHandler):
 				dom = parseString(data.content)
 				
 				items = dom.getElementsByTagName("item")
-				
-				postshtml = ""
 				
 				posts = 0
 				
@@ -84,14 +83,18 @@ class HomePage(webapp.RequestHandler):
 					
 					if posts > 3:
 						break
-				
-				
-			
+						
 				cval['posts'] = postshtml
 		except:
 			pass
 		
-		content = template.render(os.path.join(os.path.dirname(__file__), 'html/columns.html'),cval)
+		content = ""
+		results = PageCode.gql("WHERE name = :1", "columns").fetch(limit=1)
+		if len(results) > 0:
+			content = results[0].html
+			content = content.replace("{{posts}}", postshtml)
+		else:
+			content = template.render(os.path.join(os.path.dirname(__file__), 'html/columns.html'),cval)
 		
 		results = PageCode.gql("WHERE name = :1", "slider").fetch(limit=1)
 		silder = ""
