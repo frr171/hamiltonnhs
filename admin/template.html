@@ -79,6 +79,42 @@
 	</div>
 </div>
 <!-- End Footer -->
+
+<script src="http://code.jquery.com/jquery.js"></script>
+ 
+<script src="../ace/ace.js" type="text/javascript" charset="utf-8"></script>
+ 
+  <script>
+	  $(document).ready(function(){
+		
+		 $('textarea').each(function (i, el) {
+			var $el = $(el);
+			
+			var $container = $('<div/>').css({
+                    position: 'relative',
+                    height: 600
+                }).insertAfter(el);
+				
+			console.log($el.width());
+			
+			$el.hide();
+			
+			var editor = ace.edit($container[0]);
+			editor.setTheme('ace/theme/monokai');
+			
+			editor.getSession().setMode("ace/mode/html");
+			
+			editor.getSession().setValue($el.val());
+			
+			editor.getSession().on('change', function () {
+                    $el.val(editor.getSession().getValue());
+                });
+				
+			editor.getSession().setUseWrapMode(true);
+ 
+		 });
+	  });
+	</script>
 	
 </body>
 </html>

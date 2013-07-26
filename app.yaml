@@ -6,6 +6,9 @@ api_version: 1
 
 handlers:
 
+- url: /ace
+  static_dir: ace
+
 - url: /admin/css
   static_dir: themes/admin
   
